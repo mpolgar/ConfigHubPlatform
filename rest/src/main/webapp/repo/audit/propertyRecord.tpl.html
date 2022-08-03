@@ -25,7 +25,7 @@
                  ng-switch="record.type">
 
                 <div ng-switch-when="propertyKey" key-diff class="a-record"></div>
-                <div ng-switch-when="property" concise-property-diff class="a-record"></div>
+                <div ng-switch-when="property" property-diff class="a-record" should-display-concisely></div>
                 <div ng-switch-when="contextItem" context-item-diff class="a-record"></div>
                 <div ng-switch-when="securityProfile" security-profile-diff class="a-record"></div>
                 <div ng-switch-when="repository" repository-diff class="a-record"></div>

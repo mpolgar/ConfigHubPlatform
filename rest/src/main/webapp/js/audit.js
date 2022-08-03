@@ -45,9 +45,6 @@ angular
                 ['$scope', '$http', '$stateParams', '$httpParamSerializer', '$filter', 'store', 'contextService',
                     function($scope, $http, $stateParams, $httpParamSerializer, $filter, store, contextService)
                     {
-                        console.log($scope)
-                        console.log($scope.property.id)
-
                         var t = store.get("repoAuditTypes"),
                             firstId = 0,
                             lastId = 0,
@@ -919,9 +916,8 @@ angular
             restrict: "A",
             templateUrl: 'repo/audit/valueDiff.tpl.html',
             scope: true,
-            controller: ['$scope', '$http', '$httpParamSerializer', 'secretService',
-                function($scope, $http, $httpParamSerializer, secretService) {
-
+            controller: ['$scope', '$attrs', '$http', '$httpParamSerializer', 'secretService',
+                function($scope, $attrs, $http, $httpParamSerializer, secretService) {
 
                     var entry = $scope.record.entry,
                         diff = entry.diff,
@@ -940,7 +936,7 @@ angular
                     $scope.commit.hasKey = false;
                     $scope.shouldDisplayCommitData = function()
                     {
-                        return false;
+                        return $attrs.hasOwnProperty('shouldDisplayConcisely');
                     };
 
                     $scope.showKey = function()
@@ -956,144 +952,6 @@ angular
                             }
                         }
 
-                        return true;
-                    };
-
-                    $scope.mod = false;
-                    $scope.encryptionState = entry.encryptionState;
-
-                    if (revType == 'Modify')
-                    {
-                        $scope.mod = true;
-
-                        if (diff.hasOwnProperty('active'))
-                            $scope.oldActive = diff.active;
-                        else
-                            $scope.oldActive = entry.active;
-                        $scope.currActive = entry.active;
-
-                        for (i in $scope.currContext)
-                        {
-                            oldName = $scope.currContext[i].n ? $scope.currContext[i].n : '';
-                            if ($scope.oldContext)
-                            {
-                                p = $scope.currContext[i].p;
-                                cIndex = indexOf($scope.oldContext, 'p', p);
-                                if (-1 != cIndex) {
-                                    oldName = $scope.oldContext[cIndex].n ? $scope.oldContext[cIndex].n : '';
-                                }
-                            }
-                            $scope.currContext[i].on = oldName;
-                            if (!$scope.currContext[i].n) $scope.currContext[i].n = '';
-                        }
-
-                        if (diff.value) {
-                            if (angular.isObject(diff.value) || angular.isArray(diff.value))
-                                $scope.oldContent = JSON.stringify(diff.value, null, 4).split("\n");
-                            else
-                                $scope.oldContent = diff.value.split("\n");
-                        }
-                        else {
-                            if (angular.isObject(entry.value) || angular.isArray(entry.value))
-                                $scope.oldContent = JSON.stringify(entry.value, null, 4);
-                            else
-                                $scope.oldContent = entry.value.split("\n");
-                        }
-
-                        if (angular.isObject(entry.value) || angular.isArray(entry.value))
-                            $scope.currContent = JSON.stringify(entry.value, null, 4).split("\n");
-                        else
-                            $scope.currContent = entry.value ? entry.value.split("\n") : '';
-                    }
-                    else if (revType == 'Delete')
-                    {
-                        $scope.oldContext = entry.levels;
-                        if (angular.isObject(entry.value) || angular.isArray(entry.value))
-                            $scope.oldContent = JSON.stringify(entry.value, null, 4).split("\n");
-                        else
-                            $scope.oldContent = entry.value.split("\n");
-
-                        $scope.currActive = entry.active;
-                    }
-                    else
-                    {
-                        $scope.currContext = entry.levels;
-                        if (angular.isObject(entry.value) || angular.isArray(entry.value))
-                            $scope.currContent = JSON.stringify(entry.value, null, 4).split("\n");
-                        else
-                            $scope.currContent = entry.value.split("\n");
-                        $scope.currActive = entry.active;
-                    }
-
-                    $scope.decrypt = function()
-                    {
-                        secretService
-                            .authAndExecAudit($scope,
-                                $scope.commit.ts,
-                                entry.spName,
-                                function (password) {
-
-                                    $http({
-                                        method: 'POST',
-                                        url: '/rest/decryptAuditValue/' + $scope.account + "/" + $scope.repoName,
-                                        data: $httpParamSerializer({
-                                            id: entry.id,
-                                            revId: $scope.commit.rev,
-                                            password: password
-                                        }),
-                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                                    }).then(function successCallback(response)
-                                    {
-                                        if (response.data.success) {
-                                            if (revType == 'Delete')
-                                                $scope.oldContent = response.data.value;
-                                            else {
-                                                $scope.oldContent = response.data.old;
-                                                $scope.currContent = response.data.value;
-                                            }
-                                            $scope.encryptionState = 0;
-                                        }
-                                    });
-                                }
-                            );
-
-
-
-                    };
-
-                }]
-        }
-    })
-    .directive('concisePropertyDiff', function() {
-        return {
-            restrict: "A",
-            templateUrl: 'repo/audit/valueDiff.tpl.html',
-            scope: true,
-            controller: ['$scope', '$http', '$httpParamSerializer', 'secretService',
-                function($scope, $http, $httpParamSerializer, secretService) {
-
-
-                    var entry = $scope.record.entry,
-                        diff = entry.diff,
-                        revType = $scope.record.revType,
-                        i,
-                        oldName,
-                        p,
-                        cIndex;
-
-                    $scope.oldContent = '';
-                    $scope.currContent = '';
-
-                    $scope.oldContext = diff ? diff.context : null;
-                    $scope.currContext = entry.levels;
-
-                    $scope.commit.hasKey = false;
-                    $scope.showKey = function()
-                    {
-                        return false;
-                    };
-                    $scope.shouldDisplayCommitData = function()
-                    {
                         return true;
                     };
 
