@@ -4204,6 +4204,82 @@ public class Store
         return null;
     }
 
+    public List<AuditRecord> getPropertyHistory( final Repository repository,
+                                               final UserAccount user,
+                                               int max,
+                                               final long starting,
+                                               final int direction,
+                                               final Long forUserId,
+                                               final long propertyId,
+                                               final boolean importantOnly,
+                                               List<RevisionEntry.CommitGroup> commitGroup )
+          throws ConfigException
+    {
+        if ( null == repository )
+        {
+            throw new ConfigException( Error.Code.MISSING_PARAMS );
+        }
+
+        if ( !repository.isDemo() && null == user )
+        {
+            throw new ConfigException( Error.Code.MISSING_PARAMS );
+        }
+
+        if ( !repository.hasReadAccess( user ) )
+        {
+            throw new ConfigException( Error.Code.USER_ACCESS_DENIED );
+        }
+
+        if ( !importantOnly && null == commitGroup )
+        {
+            commitGroup = defaultCommitGroupList;
+        }
+
+        try
+        {
+            StringBuilder hql = new StringBuilder();
+
+            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = " ).append( repository.getId() ).append( " " );
+
+            hql.append( "AND type LIKE '%Property%' ").append( "AND revtype LIKE '%\"" ).append( propertyId ).append( "\"%' " );
+
+            if ( importantOnly )
+            {
+                hql.append( "AND notify = true " );
+            }
+            else
+            {
+                hql.append( "AND commitGroup IN (" );
+                for ( int i = 0; i < commitGroup.size(); i++ )
+                {
+                    hql.append( "'" ).append( commitGroup.get( i ).name() ).append( "'" );
+                    if ( i + 1 < commitGroup.size() )
+                    {
+                        hql.append( "," );
+                    }
+                }
+                hql.append( ") " );
+            }
+
+            if ( null != forUserId )
+            {
+                hql.append( "AND userId = " ).append( forUserId ).append( " " );
+            }
+
+            return getAuditCommits( getRevisions( max, starting, direction, hql.toString() ) );
+        }
+        catch ( NoResultException e )
+        {
+            return null;
+        }
+        catch ( Exception e )
+        {
+            handleException( e );
+        }
+
+        return null;
+    }
+
 
     public List<AuditRecord> getCommit( final Repository repository,
                                         final UserAccount user,
@@ -4283,7 +4359,7 @@ public class Store
             hql.append( "AND id > " ).append( starting ).append( " " );
             hql.append( "ORDER BY id ASC" );
         }
-
+        log.info(hql.toString());
         Query query = em.createQuery( hql.toString(), RevisionEntry.class )
                         .setLockMode( LockModeType.NONE )
                         .setMaxResults( max );
