@@ -13,7 +13,11 @@
         </div>
 
         <div class="value">
-
+            <button class="pull-right btn btn-xs btn-default only-icon"
+                    ng-click="toggleHistoryViewer(property)"
+                    style="margin-left: 5;">
+                <i class="fa fa-clock-o"></i>
+            </button>
             <div class="context pull-right">
                 <ul>
                     <li class='conflict' ng-if="property.attn === 'conflict'">Conflict</li>
@@ -85,5 +89,8 @@
         <div ng-class="{'property-form-edit': !entry.newProperty, 'new-property-form2-value': entry.newProperty && property.stickyForm}">
             <div value-editor prop-value="property"></div>
         </div>
+    </div>
+    <div ng-if="property.shouldShowHistory || property.stickyForm" class="slider">
+        <div>History goes here!</div>
     </div>
 </div>
