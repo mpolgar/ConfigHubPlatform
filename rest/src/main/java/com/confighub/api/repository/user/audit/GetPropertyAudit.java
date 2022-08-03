@@ -20,19 +20,11 @@ package com.confighub.api.repository.user.audit;
 import com.confighub.api.repository.user.AUserAccessValidation;
 import com.confighub.api.util.GsonHelper;
 import com.confighub.core.error.ConfigException;
-import com.confighub.core.organization.Team;
-import com.confighub.core.repository.*;
-import com.confighub.core.rules.AccessRule;
-import com.confighub.core.security.SecurityProfile;
-import com.confighub.core.security.Token;
-import com.confighub.core.store.APersisted;
 import com.confighub.core.store.AuditRecord;
 import com.confighub.core.store.RevisionEntry;
 import com.confighub.core.store.Store;
-import com.confighub.core.user.UserAccount;
 import com.confighub.core.utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +34,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Path("/getPropertyAudit")
 public class GetPropertyAudit
