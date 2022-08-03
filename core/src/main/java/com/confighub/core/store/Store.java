@@ -4359,7 +4359,7 @@ public class Store
             hql.append( "AND id > " ).append( starting ).append( " " );
             hql.append( "ORDER BY id ASC" );
         }
-        log.info(hql.toString());
+
         Query query = em.createQuery( hql.toString(), RevisionEntry.class )
                         .setLockMode( LockModeType.NONE )
                         .setMaxResults( max );
