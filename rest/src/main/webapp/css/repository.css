@@ -53,6 +53,12 @@ a.disabled,
     border-bottom: 1px solid #ddd;
 }
 
+@media (prefers-color-scheme: dark) {
+    .repo-head-wrapper {
+        background-color: inherit;
+    }
+}
+
 .repository-head
 {
     margin: 0;

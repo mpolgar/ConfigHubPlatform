@@ -10,6 +10,12 @@ strong {
     border-bottom: 1px solid #ddd;
 }
 
+@media (prefers-color-scheme: dark) {
+    .navbar-ch {
+        background-color: #161b22;
+    }
+}
+
 a, a:visited, a:hover { cursor: pointer; }
 
 .logo .txt,
@@ -99,6 +105,17 @@ html {
 body {
     margin-bottom: 80px;
     /*-webkit-font-smoothing: antialiased;*/
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        background-color: #0d1117;
+        color: white;
+    }
+    body {
+        background-color: #0d1117;
+        color: white;
+    }
 }
 
 .footer {
@@ -660,6 +677,13 @@ textarea.change-comment,
     padding: 6px 10px 6px 10px !important;
     border: 1px solid rgba(0, 0, 0, 0.15);
     background-color: #E9EDF2;
+}
+
+@media (prefers-color-scheme: dark) {
+    .toolbar {
+        background-color: #1a1a1a;
+        border: 1px solid #090909;
+    }
 }
 
 h5 {
@@ -1952,6 +1976,14 @@ ul.list-inline {
     background-color: #f9f9f9;
     border: 1px solid #eee;
 }
+
+@media (prefers-color-scheme: dark) {
+    .panel-form .panel-body {
+        background-color: #1a1a1a;
+        border: 1px solid #090909;
+    }
+}
+
 
 .panel {
     box-shadow: none;

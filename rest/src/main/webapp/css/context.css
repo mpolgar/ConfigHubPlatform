@@ -364,6 +364,13 @@ li.context-elements div.context-element-lineup {
     font-size: 12px;
 }
 
+@media (prefers-color-scheme: dark) {
+    .context {
+        background-color: #1a1a1a !important;
+        border: 0px;
+    }
+}
+
 .context i:after {
     content: "\f105";
     font-family: FontAwesome;
