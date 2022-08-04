@@ -40,6 +40,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mysql.jdbc.PreparedStatement;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -4087,7 +4089,7 @@ public class Store
                                           final long starting,
                                           final int direction,
                                           final Long forUserId,
-                                          final String forKey )
+                                          final String forKey)
           throws ConfigException
     {
         if ( null == repository )
@@ -4107,16 +4109,18 @@ public class Store
 
         try
         {
-            StringBuilder hql = new StringBuilder();
+            ArrayList<Object> userParams = new ArrayList(Arrays.asList(repository.getId(), "|%" + forKey + "%|"));
 
-            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = " ).append( repository.getId() ).append( " " );
-            hql.append( "AND searchKey like '%|" ).append( forKey ).append( "|%' " );
+            StringBuilder hql = new StringBuilder();
+            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
+            hql.append( "AND searchKey like ?2 " );
             if ( null != forUserId )
             {
-                hql.append( "AND userId = " ).append( forUserId ).append( " " );
+                hql.append( "AND userId = ?3 " );
+                userParams.add(forUserId);
             }
 
-            return getAuditCommits( getRevisions( max, starting, direction, hql.toString() ) );
+            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams) );
         }
         catch ( NoResultException e )
         {
@@ -4164,8 +4168,8 @@ public class Store
         try
         {
             StringBuilder hql = new StringBuilder();
-
-            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = " ).append( repository.getId() ).append( " " );
+            ArrayList<Object> userParams = new ArrayList(Arrays.asList(repository.getId()));
+            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
 
             if ( importantOnly )
             {
@@ -4173,24 +4177,17 @@ public class Store
             }
             else
             {
-                hql.append( "AND commitGroup IN (" );
-                for ( int i = 0; i < commitGroup.size(); i++ )
-                {
-                    hql.append( "'" ).append( commitGroup.get( i ).name() ).append( "'" );
-                    if ( i + 1 < commitGroup.size() )
-                    {
-                        hql.append( "," );
-                    }
-                }
-                hql.append( ") " );
+                hql.append( "AND commitGroup IN ?2 " );
+                userParams.add(commitGroup);
             }
 
             if ( null != forUserId )
             {
-                hql.append( "AND userId = " ).append( forUserId ).append( " " );
+                hql.append( "AND userId = " + String.valueOf(userParams.size() + 1) + " " );
+                userParams.add(forUserId);
             }
 
-            return getAuditCommits( getRevisions( max, starting, direction, hql.toString() ) );
+            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams) );
         }
         catch ( NoResultException e )
         {
@@ -4254,7 +4251,7 @@ public class Store
     private List<RevisionEntry> getRevisions( int max,
                                               final long starting,
                                               final int direction,
-                                              String baseHql )
+                                              String baseHql, ArrayList<Object> userParams )
           throws ConfigException
     {
         if ( max > 100 )
@@ -4275,18 +4272,23 @@ public class Store
         }
         else if ( direction > 0 )
         {
-            hql.append( "AND id < " ).append( starting ).append( " " );
+            hql.append( "AND id < ?" + String.valueOf(userParams.size() + 1) + " " );
+            userParams.add(starting);
             hql.append( "ORDER BY id DESC" );
         }
         else
         {
-            hql.append( "AND id > " ).append( starting ).append( " " );
+            hql.append( "AND id > ?" + String.valueOf(userParams.size() + 1) + " " );
+            userParams.add(starting);
             hql.append( "ORDER BY id ASC" );
         }
 
-        Query query = em.createQuery( hql.toString(), RevisionEntry.class )
-                        .setLockMode( LockModeType.NONE )
-                        .setMaxResults( max );
+        Query query = em.createQuery( hql.toString(), RevisionEntry.class );
+        for ( int i = 0; i < userParams.size(); i++ ) {
+            System.out.println("aaaaaaaaaaaaaaa " + String.valueOf(i + 1) + " " + userParams.get(i));
+            query.setParameter(i + 1, userParams.get(i));
+        }
+        query.setLockMode( LockModeType.NONE ).setMaxResults( max );
         List<RevisionEntry> revs = query.getResultList();
 
         if ( direction < 0 && revs.size() < max )
