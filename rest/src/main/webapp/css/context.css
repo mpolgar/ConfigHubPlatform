@@ -366,7 +366,7 @@ li.context-elements div.context-element-lineup {
 
 @media (prefers-color-scheme: dark) {
     .context {
-        background-color: #1a1a1a !important;
+        background-color: #21262d !important;
         border: 0px;
     }
 }

@@ -177,12 +177,28 @@ pre.diff {
     color: #333;
 }
 
+@media (prefers-color-scheme: dark) {
+    .panel-diff .panel-heading {
+        background-color: #333b47;
+        color: #ddd;
+        border-bottom: 1px solid #0d1117;
+    }
+}
+
 .panel-diff .panel-comment {
     background-color: #fbfbfb;
     border-bottom: 1px solid #eee;
     font-size: 12px;
     color: #666;
     padding: 7px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .panel-diff .panel-comment {
+        background-color: #21262d;
+        color: #ddd;
+        border-bottom: 1px solid #0d1117;
+    }
 }
 
 .del, .ins {
@@ -220,6 +236,12 @@ pre.diff {
 .record .a-record {
     padding: 0;
     border-bottom: 3px double #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+    .record .a-record {
+        background-color: #21262d;
+    }
 }
 
 .ctxes:before {
@@ -393,6 +415,15 @@ a .noselect {
     min-width: 27px;
     width: 27px;
     display: inline-block;
+}
+
+@media (prefers-color-scheme: dark) {
+    .single-add,
+    .single-del,
+    .encrypted-val,
+    .noselect {
+        background-color: inherit;
+    }
 }
 
 .revision {

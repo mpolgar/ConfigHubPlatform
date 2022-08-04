@@ -12,7 +12,7 @@ strong {
 
 @media (prefers-color-scheme: dark) {
     .navbar-ch {
-        background-color: #161b22;
+        background-color: #161b22 !important;
     }
 }
 
@@ -26,6 +26,18 @@ a, a:visited, a:hover { cursor: pointer; }
 {
     color: #353e4d;
     font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+    .logo .txt,
+    .navbar-ch .navbar-nav .dropdown-menu a,
+    .navbar-ch .navbar-nav .dropdown-menu a:visited,
+    .navbar-ch .navbar-nav a,
+    .navbar-ch .navbar-nav a:visited
+    {
+        color: #ddd;
+        font-weight: 600;
+    }
 }
 
 .navbar-ch .navbar-nav a:hover {
@@ -50,6 +62,9 @@ a, a:visited, a:hover { cursor: pointer; }
 .logo-hub { fill: #fff; }
 
 a.sec { color: #666; }
+@media (prefers-color-scheme: dark) {
+    a.sec { color: #ddd; }
+}
 a.third { color: #333; }
 a.third:hover {
     color: #346fbe;
@@ -588,6 +603,13 @@ textarea.change-comment,
     min-width: 32px;
 }
 
+@media (prefers-color-scheme: dark) {
+    .toolbar .btn {
+        background-color: #161b22;
+        color: #ddd;
+    }
+}
+
 .toolbar .btn-link:focus,
 .toolbar .btn-link:active,
 .toolbar .btn-link.search-focus
@@ -681,7 +703,7 @@ textarea.change-comment,
 
 @media (prefers-color-scheme: dark) {
     .toolbar {
-        background-color: #1a1a1a;
+        background-color: #21262d;
         border: 1px solid #090909;
     }
 }
@@ -1144,6 +1166,14 @@ ul.spaced li input[type="checkbox"] {
     /*fff5c3;*/
 }
 
+@media (prefers-color-scheme: dark) {
+    .btn-default {
+        color: #ddd;
+        background-color: #161b22;
+        border-color: #ddd;
+    }
+}
+
 .ch-highlight {
     background-color: #feff6f;
     line-height: 22px;
@@ -1217,6 +1247,11 @@ ul.spaced li input[type="checkbox"] {
     display: inline;
     font-size: 11px;
     width: 55px;
+}
+@media (prefers-color-scheme: dark) {
+    .t-foot .summary select {
+        background-color: #161b22;
+    }
 }
 
 .blank-cell:after {
@@ -1356,6 +1391,12 @@ a.blog-subscribe {
     font-size: 14px;
     border: none;
     background-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+    .value-edit-btn:hover {
+        background-color: #333b47;
+    }
 }
 
 .dotted-bottom {
@@ -1565,6 +1606,13 @@ a.blog-subscribe {
 .dropdown-menu a strong {
     color: white !important;
     background-color: red !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    .dropdown-menu {
+        background-color: #161b22;
+        color: #ddd;
+    }
 }
 
 .xss {
@@ -1979,7 +2027,7 @@ ul.list-inline {
 
 @media (prefers-color-scheme: dark) {
     .panel-form .panel-body {
-        background-color: #1a1a1a;
+        background-color: #21262d;
         border: 1px solid #090909;
     }
 }
@@ -2001,6 +2049,12 @@ ul.list-inline {
     font-weight: 600;
     border: 1px solid rgba(54, 76, 96, 0.13);
     background-color: #e6eaef;
+}
+
+@media (prefers-color-scheme: dark) {
+    .panel-form .panel-heading {
+        background-color: #21262d;
+    }
 }
 
 .panel-form-warning .panel-heading
@@ -2605,6 +2659,11 @@ ul.editor-components li i {
     border-right: none;
     background-color: #f8f8f8;
     padding: 6px 0 0 8px !important;
+}
+@media (prefers-color-scheme: dark) {
+    .files.toolbar {
+        background-color: #0d1117;
+    }
 }
 
 

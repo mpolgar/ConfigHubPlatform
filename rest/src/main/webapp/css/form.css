@@ -64,6 +64,36 @@ span.reenter:before { content: '(re-enter)'; }
     /*letter-spacing: 0.5px;*/
 }
 
+@media (prefers-color-scheme: dark) {
+    .form-field-head {
+        color: #ddd;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .selectize-input {
+        background-color: #161b22 !important;
+        border-color: #0d1117 !important;
+        color: #ddd !important;
+    }
+    .selectize-dropdown-content {
+        background-color: #161b22;
+        color: #ddd;
+    }
+    .selectize-dropdown-content .active {
+        background-color: #21262d !important;
+        color: #eee !important;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .form-control {
+        background-color: #161b22 !important;
+        border-color: #0d1117 !important;
+        color: #ddd !important;
+    }
+}
+
 .form-field-foot {
     font-size: 11px;
     padding: 3px 0;
@@ -289,6 +319,11 @@ label {
     padding: 10px 15px;
     background-color: #fff699;
 }
+@media (prefers-color-scheme: dark) {
+    .error-message {
+        background-color: #bdb023;
+    }
+}
 
 .file-rename-message {
     margin: 5px 0 0 -8px;
@@ -327,6 +362,16 @@ label {
     border-radius: 3px;
     border: 1px solid #ddd;
     border-left: 3px solid #7791c1;
+}
+@media (prefers-color-scheme: dark) {
+    .token-form-edit,
+    .new-property-form,
+    .property-form-edit,
+    .key-form-edit {
+        background-color: #21262d;
+        border: 1px solid #161b22;
+        border-left: 3px solid #7791c1;
+    }
 }
 
 .property-form-edit.new,

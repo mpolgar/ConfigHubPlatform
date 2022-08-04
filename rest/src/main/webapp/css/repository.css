@@ -13,10 +13,26 @@
     color: #444;
 }
 
+@media (prefers-color-scheme: dark) {
+    .repo-tabs.nav-tabs>li>a {
+        color: #888;
+    }
+}
+
 .repo-tabs.nav-tabs>li.active>a,
 .repo-tabs.nav-tabs>li.active>a:hover,
 .repo-tabs.nav-tabs>li.active>a:focus {
     color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+    .repo-tabs.nav-tabs>li.active>a,
+    .repo-tabs.nav-tabs>li.active>a:hover,
+    .repo-tabs.nav-tabs>li.active>a:focus {
+        color: #ddd;
+        background-color: inherit;
+        border-bottom: 1px solid #0d1117;
+    }
 }
 
 a.disabled,

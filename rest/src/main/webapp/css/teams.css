@@ -20,6 +20,18 @@
     position: relative;
 }
 
+@media (prefers-color-scheme: dark) {
+    .team-select {
+        background-color: #21262d;
+    }
+    .team-select li {
+        color: #ddd !important;
+    }
+    .team-select li.active {
+        background-color: #161b22 !important;
+    }
+}
+
 .team-select li.title:hover {
     box-shadow: none;
 }
