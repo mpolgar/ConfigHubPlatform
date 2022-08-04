@@ -941,7 +941,10 @@ angular
 
                     $scope.showKey = function()
                     {
-                        if ($scope.commit.hasKey) return false;
+                        if ($scope.commit.hasKey || $attrs.hasOwnProperty('shouldDisplayConcisely'))
+                        {
+                            return false;
+                        }
 
                         for (i in $scope.commit.records)
                         {
