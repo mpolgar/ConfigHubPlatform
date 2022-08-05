@@ -4109,11 +4109,15 @@ public class Store
 
         try
         {
-            ArrayList<Object> userParams = new ArrayList(Arrays.asList(repository.getId(), "|%" + forKey + "%|"));
-
+            ArrayList<Object> userParams = new ArrayList();
             StringBuilder hql = new StringBuilder();
+
             hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
+            userParams.add(repository.getId());
+
             hql.append( "AND searchKey like ?2 " );
+            userParams.add("|%" + forKey + "%|");
+
             if ( null != forUserId )
             {
                 hql.append( "AND userId = ?3 " );
@@ -4167,9 +4171,11 @@ public class Store
 
         try
         {
-            StringBuilder hql = new StringBuilder();
             ArrayList<Object> userParams = new ArrayList(Arrays.asList(repository.getId()));
+            StringBuilder hql = new StringBuilder();
+
             hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
+            userParams.add(repository.getId());
 
             if ( importantOnly )
             {
@@ -4254,6 +4260,10 @@ public class Store
                                               String baseHql, ArrayList<Object> userParams )
           throws ConfigException
     {
+
+
+
+        
         if ( max > 100 )
         {
             max = 100;
@@ -4266,7 +4276,15 @@ public class Store
         StringBuilder hql = new StringBuilder();
         hql.append( baseHql );
 
-        if ( 0 == starting && 0 == direction )
+        if ( direction < 0 && revs.size() < max )
+        {
+            hql.append( "ORDER BY id DESC" );
+        }
+        else if ( direction > 0 && revs.size() < max )
+        {
+            hql.append( "ORDER BY id ASC" );
+        }
+        else if ( 0 == starting && 0 == direction )
         {
             hql.append( "ORDER BY id DESC" );
         }
@@ -4284,35 +4302,13 @@ public class Store
         }
 
         Query query = em.createQuery( hql.toString(), RevisionEntry.class );
+
         for ( int i = 0; i < userParams.size(); i++ ) {
-            System.out.println("aaaaaaaaaaaaaaa " + String.valueOf(i + 1) + " " + userParams.get(i));
             query.setParameter(i + 1, userParams.get(i));
         }
+
         query.setLockMode( LockModeType.NONE ).setMaxResults( max );
         List<RevisionEntry> revs = query.getResultList();
-
-        if ( direction < 0 && revs.size() < max )
-        {
-            hql = new StringBuilder();
-            hql.append( baseHql );
-            hql.append( "ORDER BY id DESC" );
-
-            query = em.createQuery( hql.toString(), RevisionEntry.class )
-                      .setLockMode( LockModeType.NONE )
-                      .setMaxResults( max );
-            revs = query.getResultList();
-        }
-        else if ( direction > 0 && revs.size() < max )
-        {
-            hql = new StringBuilder();
-            hql.append( baseHql );
-            hql.append( "ORDER BY id ASC" );
-
-            query = em.createQuery( hql.toString(), RevisionEntry.class )
-                      .setLockMode( LockModeType.NONE )
-                      .setMaxResults( max );
-            revs = query.getResultList();
-        }
 
         return revs;
     }
