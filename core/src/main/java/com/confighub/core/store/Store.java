@@ -4260,10 +4260,6 @@ public class Store
                                               String baseHql, ArrayList<Object> userParams )
           throws ConfigException
     {
-
-
-
-        
         if ( max > 100 )
         {
             max = 100;
