@@ -36,7 +36,6 @@ import com.confighub.core.utils.FileUtils;
 import com.confighub.core.utils.Pair;
 import com.confighub.core.utils.Utils;
 import com.confighub.core.utils.Validator;
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -4286,27 +4285,28 @@ public class Store
             userParams.put("startingId", starting);
         }
 
-        Query query = em.createQuery( hql.toString(), RevisionEntry.class )
-                        .setLockMode( LockModeType.NONE )
-                        .setMaxResults( max );
-        userParams.forEach( ( param, value ) -> query.setParameter( param, value ) );
-        List<RevisionEntry> revs = query.getResultList();
-
+        List<RevisionEntry> revs = executeQuery( max, hql.toString(), userParams );
         if ( revs.size() < max && direction != 0  )
         {
-            userParams = new HashMap<>(baseUserParams);
+            userParams = new HashMap<>( baseUserParams );
             hql = new StringBuilder();
             hql.append( baseHql );
             hql.append( " ORDER BY id " + (direction > 0 ? "ASC" : "DESC") );
-
-            Query reQuery = em.createQuery( hql.toString(), RevisionEntry.class )
-                              .setLockMode( LockModeType.NONE )
-                              .setMaxResults( max );
-            userParams.forEach( ( param, value ) -> reQuery.setParameter( param, value ) );
-            revs = reQuery.getResultList();
+            revs = executeQuery( max, hql.toString(), userParams );
         }
 
         return revs;
+    }
+
+    private List<RevisionEntry> executeQuery( int max,
+                                              String queryString,
+                                              Map<String, Object> userParams )
+    {
+        Query query = em.createQuery( queryString, RevisionEntry.class )
+                        .setLockMode( LockModeType.NONE )
+                        .setMaxResults( max );
+        userParams.forEach( ( param, value ) -> query.setParameter( param, value ) );
+        return query.getResultList();
     }
 
 
