@@ -36,12 +36,11 @@ import com.confighub.core.utils.FileUtils;
 import com.confighub.core.utils.Pair;
 import com.confighub.core.utils.Utils;
 import com.confighub.core.utils.Validator;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mysql.jdbc.PreparedStatement;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -4089,7 +4088,7 @@ public class Store
                                           final long starting,
                                           final int direction,
                                           final Long forUserId,
-                                          final String forKey)
+                                          final String forKey )
           throws ConfigException
     {
         if ( null == repository )
@@ -4109,22 +4108,20 @@ public class Store
 
         try
         {
-            ArrayList<Object> userParams = new ArrayList();
             StringBuilder hql = new StringBuilder();
+            Map<String, Object> userParams = new HashMap<>();
 
-            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
-            userParams.add(repository.getId());
-
-            hql.append( "AND searchKey like ?2 " );
-            userParams.add("|%" + forKey + "%|");
+            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = :repositoryId AND searchKey LIKE :searchKey" );
+            userParams.put( "repositoryId", repository.getId() );
+            userParams.put( "searchKey", "%|" + forKey + "|%" );
 
             if ( null != forUserId )
             {
-                hql.append( "AND userId = ?3 " );
-                userParams.add(forUserId);
+                hql.append( " AND userId = :userId" );
+                userParams.put( "userId", forUserId );
             }
 
-            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams) );
+            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams ) );
         }
         catch ( NoResultException e )
         {
@@ -4171,29 +4168,29 @@ public class Store
 
         try
         {
-            ArrayList<Object> userParams = new ArrayList(Arrays.asList(repository.getId()));
             StringBuilder hql = new StringBuilder();
+            Map<String, Object> userParams = new HashMap<>();
 
-            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = ?1 " );
-            userParams.add(repository.getId());
+            hql.append( "SELECT r FROM RevisionEntry r WHERE repositoryId = :repositoryId" );
+            userParams.put( "repositoryId", repository.getId() );
 
             if ( importantOnly )
             {
-                hql.append( "AND notify = true " );
+                hql.append( " AND notify = true" );
             }
             else
             {
-                hql.append( "AND commitGroup IN ?2 " );
-                userParams.add(commitGroup);
+                hql.append( " AND commitGroup IN (:commitGroup)" );
+                userParams.put( "commitGroup", commitGroup );
             }
 
             if ( null != forUserId )
             {
-                hql.append( "AND userId = " + String.valueOf(userParams.size() + 1) + " " );
-                userParams.add(forUserId);
+                hql.append( " AND userId = :userId" );
+                userParams.put( "userId", forUserId );
             }
 
-            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams) );
+            return getAuditCommits( getRevisions( max, starting, direction, hql.toString(), userParams ) );
         }
         catch ( NoResultException e )
         {
@@ -4257,7 +4254,8 @@ public class Store
     private List<RevisionEntry> getRevisions( int max,
                                               final long starting,
                                               final int direction,
-                                              String baseHql, ArrayList<Object> userParams )
+                                              String baseHql,
+                                              Map<String, Object> baseUserParams )
           throws ConfigException
     {
         if ( max > 100 )
@@ -4269,42 +4267,44 @@ public class Store
             max = 10;
         }
 
+        HashMap<String, Object> userParams = new HashMap<>(baseUserParams);
         StringBuilder hql = new StringBuilder();
         hql.append( baseHql );
 
-        if ( direction < 0 && revs.size() < max )
+        if ( 0 == starting && 0 == direction )
         {
-            hql.append( "ORDER BY id DESC" );
-        }
-        else if ( direction > 0 && revs.size() < max )
-        {
-            hql.append( "ORDER BY id ASC" );
-        }
-        else if ( 0 == starting && 0 == direction )
-        {
-            hql.append( "ORDER BY id DESC" );
+            hql.append( " ORDER BY id DESC" );
         }
         else if ( direction > 0 )
         {
-            hql.append( "AND id < ?" + String.valueOf(userParams.size() + 1) + " " );
-            userParams.add(starting);
-            hql.append( "ORDER BY id DESC" );
+            hql.append( " AND id < :startingId ORDER BY id DESC" );
+            userParams.put("startingId", starting);
         }
         else
         {
-            hql.append( "AND id > ?" + String.valueOf(userParams.size() + 1) + " " );
-            userParams.add(starting);
-            hql.append( "ORDER BY id ASC" );
+            hql.append( " AND id > :startingId ORDER BY id ASC" );
+            userParams.put("startingId", starting);
         }
 
-        Query query = em.createQuery( hql.toString(), RevisionEntry.class );
-
-        for ( int i = 0; i < userParams.size(); i++ ) {
-            query.setParameter(i + 1, userParams.get(i));
-        }
-
-        query.setLockMode( LockModeType.NONE ).setMaxResults( max );
+        Query query = em.createQuery( hql.toString(), RevisionEntry.class )
+                        .setLockMode( LockModeType.NONE )
+                        .setMaxResults( max );
+        userParams.forEach( ( param, value ) -> query.setParameter( param, value ) );
         List<RevisionEntry> revs = query.getResultList();
+
+        if ( revs.size() < max && direction != 0  )
+        {
+            userParams = new HashMap<>(baseUserParams);
+            hql = new StringBuilder();
+            hql.append( baseHql );
+            hql.append( " ORDER BY id " + (direction > 0 ? "ASC" : "DESC") );
+
+            Query reQuery = em.createQuery( hql.toString(), RevisionEntry.class )
+                              .setLockMode( LockModeType.NONE )
+                              .setMaxResults( max );
+            userParams.forEach( ( param, value ) -> reQuery.setParameter( param, value ) );
+            revs = reQuery.getResultList();
+        }
 
         return revs;
     }
