@@ -2,17 +2,33 @@ strong {
     font-weight: 600;
 }
 
-.logo-config { fill: #213347; }
-.logo-hub { fill: #213347; }
-
-.navbar-ch {
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ddd;
+a, a:visited, a:hover {
+    cursor: pointer;
 }
 
-a, a:visited, a:hover { cursor: pointer; }
+html {
+    color: var(--color-fg-default);
+    background-color: var(--color-canvas-default);
+    position: relative;
+    min-height: 100%;
+}
 
-.logo .txt,
+body {
+    color: var(--color-fg-default);
+    background-color: var(--color-canvas-default);
+    font-family: 'Open Sans';
+    margin-bottom: 80px;
+}
+
+/*-----------------------------------------*/
+/* Main Navigation Bar */
+/*-----------------------------------------*/
+.navbar-ch {
+    color: var(--color-header-text);
+    background-color: var(--color-header-bg);
+    border-bottom: none;
+}
+
 .navbar-ch .navbar-nav .dropdown-menu a,
 .navbar-ch .navbar-nav .dropdown-menu a:visited,
 .navbar-ch .navbar-nav a,
@@ -30,18 +46,29 @@ a, a:visited, a:hover { cursor: pointer; }
     background-color: transparent;
 }
 
-.navbar-ch {
-    background-color: #16111c;
-    border-bottom: none;
+.navbar-toggle,
+.navbar-ch .navbar-nav a,
+.navbar-ch .navbar-nav a:visited
+{
+    color: #fff;
 }
 
-.navbar-toggle,
-.navbar-ch .navbar-nav a, .navbar-ch .navbar-nav a:visited { color: #fff; }
+#logo {
+    fill: var(--color-header-logo);
+    margin-right: 10px;
+    position: relative;
+    top: 0;
+    width: 115px;
+    max-height: 24px;
+}
+
+#logo:hover {
+    fill: var(--color-header-text);
+}
+
+
 
 .repository-ctrl .navbar-toggle { color: #333; }
-
-.logo-config { fill: #fff; }
-.logo-hub { fill: #fff; }
 
 a.sec { color: #666; }
 a.third { color: #333; }
@@ -61,20 +88,7 @@ a.no-hover:hover {
     padding: 14px 10px 14px 0;
 }
 
-/*#logo path.a { fill: #333; }*/
 a.logo { padding-left: 0; }
-
-body {
-    font-family: 'Open Sans';
-}
-
-#logo {
-    margin-right: 10px;
-    position: relative;
-    top: 0;
-    width: 115px;
-    max-height: 24px;
-}
 
 .enterprise #logo {
     width: 215px;
@@ -91,15 +105,6 @@ body {
     float: right;
 }
 
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-body {
-    margin-bottom: 80px;
-    /*-webkit-font-smoothing: antialiased;*/
-}
 
 .footer {
     position: absolute;
@@ -2892,4 +2897,57 @@ a.user-prefix:before {
 }
 .successful_connection:after {
     content: "Connection succesful";
+}
+
+/*-----------------------------------------*/
+/* Dark Mode Toggle */
+/*-----------------------------------------*/
+.dark-toggle
+{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 54px;
+    height: 24px;
+    display: inline-block;
+    position: relative;
+    border-radius: 50px;
+    overflow: hidden;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: var(--color-dark-toggle-day);
+    transition: background-color ease 0.3s;
+}
+
+.dark-toggle:before
+{
+    content: "\f186 \f185";
+    display: block;
+    position: absolute;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    background: var(--color-scale-white);
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    font: 14px/20px FontAwesome;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-indent: -21px;
+    letter-spacing: 35px;
+    color: var(--color-scale-white);
+    white-space: nowrap;
+    transition: all cubic-bezier(0.3, 1, 0.7, 1) 0.3s;
+}
+
+.dark-toggle:checked
+{
+    background-color: var(--color-dark-toggle-night);
+}
+
+.dark-toggle:checked:before
+{
+    left: 32px;
 }

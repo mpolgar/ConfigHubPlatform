@@ -433,6 +433,22 @@ angular
             };
         }])
 
+    .directive('darkModeToggle', function() {
+        return {
+            template: '<input class="dark-toggle" type="checkbox" style="margin:0" ng-click="toggleDarkMode()" ng-model="globalDarkMode" />',
+            scope: true,
+            controller: ['$scope', 'store',
+                function($scope, store) {
+                    $scope.globalDarkMode = store.get('globalDarkMode') === null ? false : store.get("globalDarkMode");
+                    document.documentElement.setAttribute('data-theme', $scope.globalDarkMode ? 'dark' : 'light');
+
+                    $scope.toggleDarkMode = function() {
+                        store.set('globalDarkMode', $scope.globalDarkMode);
+                        document.documentElement.setAttribute('data-theme', $scope.globalDarkMode ? 'dark' : 'light');
+                    };
+                }]
+        }})
+
     .directive('updateTitle', ['$rootScope', '$timeout',
         function($rootScope, $timeout) {
             return {
