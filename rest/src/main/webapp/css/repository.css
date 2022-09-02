@@ -2,7 +2,6 @@
     margin-bottom: -1px;
 }
 
-
 .repo-tabs.nav-tabs {
     margin-top: 20px;
 }
@@ -10,13 +9,13 @@
 .repo-tabs.nav-tabs>li>a {
     padding: 7px 15px;
     font-weight: normal;
-    color: #444;
+    color: var(--color-fg-default);
 }
 
 .repo-tabs.nav-tabs>li.active>a,
 .repo-tabs.nav-tabs>li.active>a:hover,
 .repo-tabs.nav-tabs>li.active>a:focus {
-    color: #333;
+    color: var(--color-fg-default);
 }
 
 a.disabled,
@@ -29,12 +28,12 @@ a.disabled,
 }
 
 .repo-tabs.nav-tabs>li>a i {
-    color: #ccc;
+    color: var(--color-fg-subtle);
     padding-right: 5px;
 }
 
 .repo-tabs.nav-tabs>li.active>a i {
-    color: #df5000;
+    color: var(--color-primer-border-active);
 }
 
 .repo-tabs.dropdown-menu>li>a {
@@ -48,9 +47,8 @@ a.disabled,
 
 .repo-head-wrapper {
     padding: 15px 0 0 0;
-    background-color: #fafafa;
-    /*#f0f2f2;*/
-    border-bottom: 1px solid #ddd;
+    background-color: var(--color-canvas-default);
+    border-bottom: 1px solid var(--color-border-muted);
 }
 
 .repository-head
