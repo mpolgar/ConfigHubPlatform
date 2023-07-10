@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2016 ConfigHub, LLC to present - All rights reserved.
+  ~
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,11 +17,14 @@
     <version>${revision}</version>
     <name>ConfigHub Parent</name>
     <packaging>pom</packaging>
+
     <modules>
         <module>core</module>
         <module>rest</module>
     </modules>
+
     <properties>
         <revision>1.10.0</revision>
     </properties>
+
 </project>
